@@ -17,6 +17,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] GameObject roomItemPrefab;
     [SerializeField] Transform PlayerListContent;
     [SerializeField] GameObject PlayerItemPrefab;
+    [SerializeField] GameObject BotonStart;
 
     private void Awake()
     {
@@ -74,9 +75,10 @@ public class Launcher : MonoBehaviourPunCallbacks
         for (int i = 0; i < players.Count(); i++)
         {
             Instantiate(PlayerItemPrefab,
-           PlayerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
+            PlayerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
         }
 
+        BotonStart.SetActive(PhotonNetwork.IsMasterClient);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -128,5 +130,17 @@ public class Launcher : MonoBehaviourPunCallbacks
         Instantiate(PlayerItemPrefab,
         PlayerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
     }
+
+    public void StartGame()
+    {
+        // el 1 es porque es el numero de build de nuestra escena de juego
+        PhotonNetwork.LoadLevel(1);
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        BotonStart.SetActive(PhotonNetwork.IsMasterClient);
+    }
+
 
 }
